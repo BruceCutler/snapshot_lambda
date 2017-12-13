@@ -55,23 +55,6 @@ def createSnapshots(instancesList):
     print('------')
     print "Snapshot creation complete!"
     print('------')
-          
-def cleanupSnapshots():
-    print "Running cleanupSnapshots function..."
-    # Get list of snapshot ID's
-    snapshots = ec2.describe_snapshots(OwnerIds=['522295397264'])
-    for snapshot in snapshots['Snapshots']:
-        snapId = snapshot['SnapshotId']
-        result = checkExpiration(snapId)
-        if result:
-            print("Deleting snapshot:"+snapId)
-            delete = ec2.delete_snapshot(SnapshotId=snapId)
-        else:
-            continue
-    
-    print('------')
-    print "Snapshot cleanup complete!"
-    print('------')
 
 def addTagsToSnapshot(snapId,expiration):
     print "Adding Tags to snapshot..."
@@ -100,6 +83,23 @@ def expirationDate(instance):
         else:
             continue
     return date.today() + timedelta(days=5)
+
+def cleanupSnapshots():
+    print "Running cleanupSnapshots function..."
+    # Get list of snapshot ID's
+    snapshots = ec2.describe_snapshots(OwnerIds=['xxxxxxxxxxx'])
+    for snapshot in snapshots['Snapshots']:
+        snapId = snapshot['SnapshotId']
+        result = checkExpiration(snapId)
+        if result:
+            print("Deleting snapshot:"+snapId)
+            delete = ec2.delete_snapshot(SnapshotId=snapId)
+        else:
+            continue
+
+    print('------')
+    print "Snapshot cleanup complete!"
+    print('------')
 
 def checkExpiration(id):
     tags = ec2.describe_tags(Filters=[{'Name':'resource-id','Values':[id]}])['Tags']
